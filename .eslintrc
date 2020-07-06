@@ -1,0 +1,65 @@
+{
+  "extends": ["airbnb", "prettier", "prettier/react"],
+  "plugins": ["prettier", "react", "babel", "jsx-a11y", "react-hooks"],
+  "parser": "babel-eslint",
+  "rules": {
+    "import/newline-after-import": "error",
+    "import/imports-first": ["error", "absolute-first"],
+    "import/prefer-default-export": 1,
+    "consistent-return": 0,
+    "no-param-reassign": 0,
+    "linebreak-style": 0,
+    "no-unused-vars": 1,
+    "semi": ["error", "never"],
+    "prettier/prettier": "error",
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }
+    ],
+    "array-callback-return": 0,
+    "dot-notation": 0,
+    "react/state-in-constructor": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/no-deprecated": 0,
+    "react/require-default-props": 0,
+    "react/destructuring-assignment": 0,
+    "react/prop-types": 1,
+    "react/forbid-prop-types": 0,
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "jsx-a11y/control-has-associated-label": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/accessible-emoji": 0,
+    "jsx-a11y/label-has-associated-control": [
+      1,
+      {
+        "assert": "either"
+      }
+    ]
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true,
+    "alert": true
+  },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {
+        "alias": {}
+      }
+    }
+  }
+}
