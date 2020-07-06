@@ -28,3 +28,28 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+.env
+
+# Api Rails
+
+/api/.bundle
+
+# Ignore all logfiles and tempfiles.
+/api/log/*
+/api/tmp/*
+!/api/log/.keep
+!/api/tmp/.keep
+
+# Ignore uploaded files in development
+/api/storage/*
+!/api/storage/.keep
+
+/api/node_modules
+/api/yarn-error.log
+
+/api/public/assets
+/api/.byebug_history
+
+# Ignore master key for decrypting credentials and more.
+/api/config/master.key
