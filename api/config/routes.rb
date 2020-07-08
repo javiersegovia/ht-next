@@ -39,5 +39,7 @@ Rails.application.routes.draw do
       delete 'logout', to: 'devise/sessions#destroy'
       post 'register', to: 'devise/registrations#create'
     end
+
+    resource :users, only: [:show]
   end
 end
