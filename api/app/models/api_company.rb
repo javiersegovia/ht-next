@@ -4,6 +4,7 @@ class ApiCompany < Company
   devise :jwt_authenticatable, jwt_revocation_strategy: self
 
   validates :jti, presence: true
+
   def generate_jwt
     JWT.encode({
         id: id,
