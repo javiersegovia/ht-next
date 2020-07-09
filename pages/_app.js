@@ -1,13 +1,13 @@
-import { Provider } from 'react-redux'
+// import { Provider } from 'react-redux'
+// import store from '../store'
+import '../scss/main.scss'
 
-import store from '../store'
+// <Provider store={store}>
+//   <Component {...pageProps} />
+// </Provider>
 
 const MyApp = ({ Component, pageProps }) => {
-  return (
-    <Provider store={store}>
-      <Component {...pageProps} />
-    </Provider>
-  )
+  return <Component {...pageProps} />
 }
 
 export default MyApp

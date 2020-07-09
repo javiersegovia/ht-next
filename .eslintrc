@@ -58,7 +58,10 @@
   "settings": {
     "import/resolver": {
       "babel-module": {
-        "alias": {}
+        "alias": {
+          "components": "./components",
+          "lib": "./lib",
+        }
       }
     }
   }
