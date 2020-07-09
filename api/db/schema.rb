@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_08_204325) do
+ActiveRecord::Schema.define(version: 2020_07_09_205856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 2020_07_08_204325) do
     t.string "affinity"
     t.string "profile_completed_at"
     t.string "photo_path"
+    t.integer "calification"
+    t.string "current_state"
   end
 
 end
