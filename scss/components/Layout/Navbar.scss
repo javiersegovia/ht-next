@@ -1,0 +1,17 @@
+.Navbar {
+  background: white;
+  border-bottom: 4px solid black;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.Navbar__linkItem {
+  margin: 0 15px;
+  font-weight: bold;
+  transition: all .35s ease;
+
+  &:hover {
+    color: $color__orange-main;
+  }
+}

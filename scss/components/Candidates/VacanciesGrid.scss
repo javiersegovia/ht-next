@@ -1,0 +1,6 @@
+.VacanciesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 250px);
+  grid-auto-flow: column;
+  grid-gap: 18px;
+}

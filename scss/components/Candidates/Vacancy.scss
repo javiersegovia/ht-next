@@ -1,0 +1,52 @@
+.Vacancy {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 3px 0 rgba(70, 68, 98, 0.1);
+  transition: background 0.2s ease;
+}
+
+.Vacancy__avatar {
+  background: slateblue;
+  width: 42px;
+  height: 42px;
+  border-radius: 22px;
+}
+
+.Vacancy__infoContainer {
+  display: flex;
+  padding: 15px;
+  font-weight: bold;
+}
+
+.Vacancy__info {
+  margin-left: 15px;
+  font-size: 13px;
+}
+
+.Vacancy__location {
+  color: transparentize($color__gray-main, 0.5);
+  color: $color__gray-main;
+  font-size: 11px;
+}
+
+.Vacancy__calification {
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.Vacancy__bottom {
+  display: flex;
+  padding: 7px 15px;
+  font-size: 12px;
+  font-weight: bold;
+  border-top: 1px solid #eff2f7;
+}
+
+.Vacancy__profilePercentage {
+  color: $color__gray-main;
+}
+
+.Vacancy__affinityPercentage {
+  color: $color__orange-main;
+  margin-left: 10px;
+}
