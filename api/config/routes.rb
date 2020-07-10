@@ -40,6 +40,6 @@ Rails.application.routes.draw do
       post 'register', to: 'devise/registrations#create'
     end
 
-    resource :users, only: [:show]
+    resource :users, only: [:show, :update]
   end
 end
