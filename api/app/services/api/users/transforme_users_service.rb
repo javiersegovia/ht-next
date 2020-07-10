@@ -11,7 +11,7 @@ module Api::Users::TransformeUsersService
   def self.usersParamsTransformer(users)
     users.map do |user|
       user.attributes.deep_symbolize_keys.tap do |whitelist|
-        whitelist[:id] = whitelist[:name]
+        whitelist[:userId] = whitelist[:id]
         whitelist[:fullName] = whitelist[:name]
         whitelist[:location] = whitelist[:residence_city]
         whitelist[:calification] = "Calificación #{whitelist[:calification]}/5"

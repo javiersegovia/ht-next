@@ -17,7 +17,11 @@ const VacancyColumn = ({ column, items }) => {
             {...provided.droppableProps}
           >
             {items.map((item, index) => (
-              <DraggableVacancy key={item.id} vacancy={item} index={index} />
+              <DraggableVacancy
+                key={`${item.userId}_${item.fullName}`}
+                vacancy={item}
+                index={index}
+              />
             ))}
             {provided.placeholder}
           </div>

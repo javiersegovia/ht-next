@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { DragDropContext, resetServerContext } from 'react-beautiful-dnd'
 import axios from 'axios'
-import { useInfiniteQuery } from 'react-query'
+import { queryCache, useInfiniteQuery } from 'react-query'
 import VacanciesGrid from 'components/Candidates/VacanciesGrid'
 import VacancyColumn from 'components/Candidates/VacancyColumn'
 import Navbar from 'components/Layout/Navbar'
@@ -13,18 +13,19 @@ import { ReactQueryDevtools } from 'react-query-devtools'
 
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 
+const usersEndpoint = 'http://localhost:3000/api/users'
+
 resetServerContext()
 
 const VacanciesPage = (props) => {
+  const [dndData, setDndData] = useState(dndInitialData)
+
   const fetchUsers = async (key, nextPage = 1) => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/users?page=${nextPage}&per_page=40`
+      `${usersEndpoint}?page=${nextPage}&per_page=40`
     )
     return data
   }
-
-  const [dndData, setDndData] = useState(dndInitialData)
-  const [currentPage, setCurrentPage] = useState(1)
 
   const {
     isLoading,
@@ -37,18 +38,42 @@ const VacanciesPage = (props) => {
   } = useInfiniteQuery('users', fetchUsers, {
     refetchOnWindowFocus: false,
     getFetchMore: (lastGroup) => lastGroup.nextPage,
-    onSuccess: (response) => {
-      const lastItem = response[response.length - 1]
-      const { users = [] } = lastItem
+    cacheTime: 60 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
+    initialStale: true,
+    initialData: () => {
+      // Use a todo from the 'todos' query as the initial data for this todo query
+      const currentData = queryCache.getQueryData('users')
 
-      console.log('response onSuccess')
-      console.log(lastItem)
+      console.log('currentData')
+      console.log(currentData)
+
+      if (currentData) {
+        // return ?.find((d) => d.id === todoId)
+      }
+    },
+    onSuccess: (response) => {
+      if (!response) return
+
+      let users = []
+
+      const lastItem = response[response.length - 1]
+
+      if (!Object.keys(dndData.items).length && response?.length > 1) {
+        const allUsers = response
+          .map((queryResponse) => queryResponse.users)
+          .flat()
+
+        users = allUsers
+      } else {
+        users = lastItem.users
+      }
 
       if (users.length) {
         const newItems = {}
 
         users.forEach((user) => {
-          newItems[user.id] = user
+          newItems[`${user.userId}_${user.fullName}`] = user
         })
 
         const newColumns = {}
@@ -56,7 +81,7 @@ const VacanciesPage = (props) => {
         Object.values(dndData.columns).forEach((column) => {
           const newItemIds = Object.values(newItems)
             .filter((user) => user.currentState === column.id)
-            .map((u) => u.id)
+            .map((u) => `${u.userId}_${u.fullName}`)
 
           newColumns[column.id] = {
             ...column,
@@ -81,12 +106,19 @@ const VacanciesPage = (props) => {
 
   const loadMoreButtonRef = useRef()
 
+  const fetchMoreIfYouCan = () => {
+    if (canFetchMore) {
+      fetchMore()
+    }
+  }
+
   useIntersectionObserver({
     target: loadMoreButtonRef,
-    onIntersect: fetchMore,
+    onIntersect: fetchMoreIfYouCan,
+    dependencies: [canFetchMore],
   })
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result
 
     if (!destination) {
@@ -137,6 +169,11 @@ const VacanciesPage = (props) => {
         itemIds: finishColumnItemIds,
       }
 
+      // await axios.put('usersEndpoint', {
+      //   id: draggableId,
+      //   currentState: destination.id,
+      // })
+
       setDndData((prevState) => ({
         ...prevState,
         columns: {
@@ -153,12 +190,14 @@ const VacanciesPage = (props) => {
       <Navbar />
       <Wrapper>
         {isLoading ? (
-          <h3>Cargando candidatos...</h3>
+          <div className="LoadingGif__wrapper">
+            <div className="LoadingGif" />
+          </div>
         ) : error ? (
           <h3>Error: {error.message}</h3>
         ) : (
           <DragDropContext onDragEnd={onDragEnd}>
-            <VacanciesGrid>
+            <VacanciesGrid isFetching={isFetching}>
               {dndData.columnOrder.map((columnId) => {
                 const column = dndData.columns[columnId]
                 const items = column.itemIds.map(
@@ -174,23 +213,7 @@ const VacanciesPage = (props) => {
                 )
               })}
             </VacanciesGrid>
-            <div>
-              <button
-                type="button"
-                ref={loadMoreButtonRef}
-                onClick={() => fetchMore()}
-                disabled={!canFetchMore || isFetchingMore}
-              >
-                {isFetchingMore
-                  ? 'Loading more...'
-                  : canFetchMore
-                  ? 'Load More'
-                  : 'Nothing more to load'}
-              </button>
-            </div>
-            <div>
-              {isFetching && !isFetchingMore ? 'Background Updating...' : null}
-            </div>
+            <div ref={loadMoreButtonRef} />
           </DragDropContext>
         )}
       </Wrapper>

@@ -6,6 +6,7 @@ export default function useIntersectionObserver({
   onIntersect,
   threshold = 1.0,
   rootMargin = '0px',
+  dependencies = [],
 }) {
   React.useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,5 +30,5 @@ export default function useIntersectionObserver({
     return () => {
       observer.unobserve(el)
     }
-  }, [target.current])
+  }, [target.current, ...dependencies])
 }

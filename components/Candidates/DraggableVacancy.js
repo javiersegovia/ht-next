@@ -3,7 +3,10 @@ import Vacancy from './Vacancy'
 
 const DraggableVacancy = ({ vacancy, index }) => {
   return (
-    <Draggable draggableId={vacancy.id} index={index}>
+    <Draggable
+      draggableId={`${vacancy.userId}_${vacancy.fullName}`}
+      index={index}
+    >
       {(provided, snapshot) => (
         <div
           className={`DraggableVacancy ${

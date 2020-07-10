@@ -1,6 +1,7 @@
 class User < ApplicationRecord
 
   FRONTEND_USER_KEYS = [
+    :id,
     :fullName,
     :location,
     :calification,

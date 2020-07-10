@@ -3,4 +3,24 @@
   grid-template-columns: auto;
   grid-auto-flow: column;
   grid-gap: 18px;
+
+  &.isFetching {
+    opacity: .5;
+  }
+}
+
+.LoadingGif__wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.LoadingGif {
+  background: url('/loading.svg');
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
