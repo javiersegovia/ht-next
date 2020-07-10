@@ -8,9 +8,11 @@ const VacancyColumn = ({ column, items }) => {
         {column.title} <span>{items.length}</span>
       </div>
       <Droppable droppableId={column.id}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <div
-            className="VacancyColumn__list"
+            className={`VacancyColumn__list ${
+              snapshot.isDraggingOver ? 'isDraggingOver' : ''
+            }`}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >

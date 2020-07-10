@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { DragDropContext, resetServerContext } from 'react-beautiful-dnd'
 import axios from 'axios'
 import { useInfiniteQuery } from 'react-query'
@@ -9,18 +9,22 @@ import VacancyColumn from 'components/Candidates/VacancyColumn'
 import Navbar from 'components/Layout/Navbar'
 import Wrapper from 'components/Layout/Wrapper'
 import dndInitialData from 'lib/dndData'
-
 import { ReactQueryDevtools } from 'react-query-devtools'
+
+import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 
 resetServerContext()
 
 const VacanciesPage = (props) => {
   const fetchUsers = async (key, nextPage = 1) => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/users?page=${nextPage}&per_page=100`
+      `http://localhost:3000/api/users?page=${nextPage}&per_page=40`
     )
     return data
   }
+
+  const [dndData, setDndData] = useState(dndInitialData)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const {
     isLoading,
@@ -31,14 +35,56 @@ const VacanciesPage = (props) => {
     fetchMore,
     canFetchMore,
   } = useInfiniteQuery('users', fetchUsers, {
+    refetchOnWindowFocus: false,
     getFetchMore: (lastGroup) => lastGroup.nextPage,
     onSuccess: (response) => {
-      console.log('response')
-      console.log(response)
+      const lastItem = response[response.length - 1]
+      const { users = [] } = lastItem
+
+      console.log('response onSuccess')
+      console.log(lastItem)
+
+      if (users.length) {
+        const newItems = {}
+
+        users.forEach((user) => {
+          newItems[user.id] = user
+        })
+
+        const newColumns = {}
+
+        Object.values(dndData.columns).forEach((column) => {
+          const newItemIds = Object.values(newItems)
+            .filter((user) => user.currentState === column.id)
+            .map((u) => u.id)
+
+          newColumns[column.id] = {
+            ...column,
+            itemIds: [...new Set(column.itemIds.concat(newItemIds))],
+          }
+        })
+
+        setDndData((previousState) => ({
+          ...previousState,
+          items: {
+            ...previousState.items,
+            ...newItems,
+          },
+          columns: {
+            ...previousState.columns,
+            ...newColumns,
+          },
+        }))
+      }
     },
   })
 
-  const [dndData, setDndData] = useState(dndInitialData)
+  const loadMoreButtonRef = useRef()
+
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchMore,
+  })
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result
@@ -112,7 +158,7 @@ const VacanciesPage = (props) => {
           <h3>Error: {error.message}</h3>
         ) : (
           <DragDropContext onDragEnd={onDragEnd}>
-            {/* <VacanciesGrid>
+            <VacanciesGrid>
               {dndData.columnOrder.map((columnId) => {
                 const column = dndData.columns[columnId]
                 const items = column.itemIds.map(
@@ -127,8 +173,24 @@ const VacanciesPage = (props) => {
                   />
                 )
               })}
-            </VacanciesGrid> */}
-            <h1>My grid component goes here</h1>
+            </VacanciesGrid>
+            <div>
+              <button
+                type="button"
+                ref={loadMoreButtonRef}
+                onClick={() => fetchMore()}
+                disabled={!canFetchMore || isFetchingMore}
+              >
+                {isFetchingMore
+                  ? 'Loading more...'
+                  : canFetchMore
+                  ? 'Load More'
+                  : 'Nothing more to load'}
+              </button>
+            </div>
+            <div>
+              {isFetching && !isFetchingMore ? 'Background Updating...' : null}
+            </div>
           </DragDropContext>
         )}
       </Wrapper>
