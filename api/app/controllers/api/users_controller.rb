@@ -28,8 +28,6 @@ class Api::UsersController < ApplicationController
   end
 
   def sanitize_user_params
-    puts '#' * 100
-    puts params
     params.permit(:id, *User::FRONTEND_USER_KEYS).to_h.deep_symbolize_keys
   end
 
