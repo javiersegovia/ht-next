@@ -3,4 +3,4 @@ puts "Creating Users..."
   puts "User #{position}"
   FactoryBot.create(:user)}
 
-puts "Rady bye.. :3"
+puts "Ready bye..."

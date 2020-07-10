@@ -3,10 +3,9 @@ class Api::UsersController < ApplicationController
   DEFAULT_PAGINTAION_PARAMS = { page: 1, per_page: 10 }
 
   def show
+    users = User.paginate(pagination_params)
 
-    puts sanitize_pagination_params
-
-    @users = User.paginate(pagination_params)
+    @users = Api::Users::TransformeUsersService.(users)
 
     render json: { status: 200, users: @users }
 

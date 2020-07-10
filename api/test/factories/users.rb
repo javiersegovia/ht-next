@@ -5,12 +5,22 @@ profile_photos = [
   "https://lh3.googleusercontent.com/proxy/XOqB03PE_ijg1XQX8haQSK7sMaI2xnlN6aEhc8UrdCBeDxuQZtA7J0D_6BMUfygY7TQVvTN6jicwB9orb4e5Q1H1GY66s9h4ARyh5Rn85iHVYPTUncfypEoRh99XK5woKUMb"
 ]
 
+current_state = [
+  'applied',
+  'preselected',
+  'test',
+  'interview',
+  'deleted',
+]
+
 FactoryBot.define do
   factory :user do
-    name                  { Faker::Name.name_with_middle }
-    residence_city        { Faker::Nation.capital_city }
-    affinity              { Faker::Number.within(range: 1..100) }
-    profile_completed_at  { Faker::Number.within(range: 1..100) }
-    photo_path            { profile_photos[rand(0...3)] }
+    name                 { Faker::Name.name_with_middle }
+    residence_city       { Faker::Nation.capital_city }
+    affinity             { Faker::Number.within(range: 1..100) }
+    profile_completed_at { Faker::Number.within(range: 1..100) }
+    photo_path           { profile_photos[rand(0...3)] }
+    calification         { Faker::Number.within(range: 1...5) }
+    current_state        { current_state[rand(0..4)] }
   end
 end
