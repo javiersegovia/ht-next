@@ -1,24 +1,6 @@
 module Api::Users::TransformeUsersService
 
-  FRONTEND_USER_KEYS = [
-    :fullName,
-    :location,
-    :calification,
-    :profilePercentage,
-    :affinityPercentage,
-    :currentState,
-    :photo_path
-  ]
-
-  NEEDED_USER_KEYS = [
-    :name,
-    :residence_city,
-    :calification,
-    :profile_completed_at,
-    :affinity,
-    :current_state,
-    :photo
-  ]
+  FRONTEND_USER_KEYS = User::FRONTEND_USER_KEYS
 
   def self.call(users = [])
     usersParamsTransformer(users)

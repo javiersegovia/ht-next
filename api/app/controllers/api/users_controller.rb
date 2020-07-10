@@ -8,7 +8,12 @@ class Api::UsersController < ApplicationController
     @users = Api::Users::TransformeUsersService.(users)
 
     render json: { status: 200, users: @users, next_page: determinate_next_page(pagination_params) }
+  end
 
+  def update
+    update, result = Api::Users::UpdateUsersService.(sanitize_user_params)
+
+    render json: { status: update ? 200: 400, user: result }
   end
 
   private
@@ -20,6 +25,10 @@ class Api::UsersController < ApplicationController
   def pagination_params
     numeric_sanitize_pagination_params = sanitize_pagination_params.map { |key, value| [key, value.to_i] }.to_h
     DEFAULT_PAGINTAION_PARAMS.merge(numeric_sanitize_pagination_params)
+  end
+
+  def sanitize_user_params
+    params.permit(:id, *User::FRONTEND_USER_KEYS).to_h.deep_symbolize_keys
   end
 
   def determinate_next_page(pagination_params)
