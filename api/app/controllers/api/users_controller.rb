@@ -7,7 +7,7 @@ class Api::UsersController < ApplicationController
 
     @users = Api::Users::TransformeUsersService.(users)
 
-    render json: { status: 200, users: @users, next_page: determinate_next_page(pagination_params) }
+    render json: { status: 200, users: @users, nextPage: determinate_next_page(pagination_params) }
   end
 
   def update

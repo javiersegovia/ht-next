@@ -7,12 +7,16 @@ const Vacancy = ({ vacancy }) => {
     calification,
     profilePercentage,
     affinityPercentage,
+    photo_path: photoPath = '',
   } = vacancy
 
   return (
     <div className="Vacancy">
       <div className="Vacancy__infoContainer">
-        <div className="Vacancy__avatar" />
+        <div
+          className="Vacancy__avatar"
+          style={{ backgroundImage: `url(${photoPath})` }}
+        />
         <div className="Vacancy__info">
           <div className="Vacancy__name">{fullName}</div>
           <div className="Vacancy__location">{location}</div>

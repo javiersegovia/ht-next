@@ -1,7 +1,11 @@
 import React from 'react'
 
-function VacanciesGrid({ children }) {
-  return <div className="VacanciesGrid">{children}</div>
+function VacanciesGrid({ children, isFetching }) {
+  return (
+    <div className={`VacanciesGrid ${isFetching ? 'isFetching' : ''}`}>
+      {children}
+    </div>
+  )
 }
 
 export default VacanciesGrid

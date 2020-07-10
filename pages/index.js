@@ -5,7 +5,9 @@ const IndexPage = () => {
   return (
     <>
       <Navbar />
-      <Wrapper>Hello World</Wrapper>
+      <Wrapper>
+        <h1 style={{ textAlign: 'center' }}>Bienvenidos a HoyTrabajas</h1>
+      </Wrapper>
     </>
   )
 }

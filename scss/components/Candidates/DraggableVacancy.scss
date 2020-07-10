@@ -2,4 +2,8 @@
   &.isDragging .Vacancy {
     background: #e8ffe2;
   }
+
+  &.draggingOver__deleted .Vacancy {
+    background: #f7b6b0;
+  }
 }

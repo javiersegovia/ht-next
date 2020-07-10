@@ -8,14 +8,20 @@ const VacancyColumn = ({ column, items }) => {
         {column.title} <span>{items.length}</span>
       </div>
       <Droppable droppableId={column.id}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <div
-            className="VacancyColumn__list"
+            className={`VacancyColumn__list ${
+              snapshot.isDraggingOver ? 'isDraggingOver' : ''
+            }`}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
             {items.map((item, index) => (
-              <DraggableVacancy key={item.id} vacancy={item} index={index} />
+              <DraggableVacancy
+                key={`${item.userId}_${item.fullName}`}
+                vacancy={item}
+                index={index}
+              />
             ))}
             {provided.placeholder}
           </div>

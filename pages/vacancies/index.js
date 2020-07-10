@@ -1,23 +1,28 @@
 /* eslint-disable no-nested-ternary */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DragDropContext, resetServerContext } from 'react-beautiful-dnd'
 import axios from 'axios'
-import { useInfiniteQuery } from 'react-query'
+import { useQueryCache, useInfiniteQuery } from 'react-query'
 import VacanciesGrid from 'components/Candidates/VacanciesGrid'
 import VacancyColumn from 'components/Candidates/VacancyColumn'
 import Navbar from 'components/Layout/Navbar'
 import Wrapper from 'components/Layout/Wrapper'
 import dndInitialData from 'lib/dndData'
-
 import { ReactQueryDevtools } from 'react-query-devtools'
+
+import useIntersectionObserver from '../../hooks/useIntersectionObserver'
+
+const usersEndpoint = 'http://localhost:3000/api/users'
 
 resetServerContext()
 
-const VacanciesPage = (props) => {
+const VacanciesPage = () => {
+  const [dndData, setDndData] = useState(dndInitialData)
+
   const fetchUsers = async (key, nextPage = 1) => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/users?page=${nextPage}&per_page=100`
+      `${usersEndpoint}?page=${nextPage}&per_page=40`
     )
     return data
   }
@@ -25,22 +30,84 @@ const VacanciesPage = (props) => {
   const {
     isLoading,
     error,
-    data,
     isFetching,
-    isFetchingMore,
     fetchMore,
     canFetchMore,
   } = useInfiniteQuery('users', fetchUsers, {
+    refetchOnWindowFocus: false,
     getFetchMore: (lastGroup) => lastGroup.nextPage,
+    refetchOnMount: false,
+    enabled: false,
+    cacheTime: 60 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
     onSuccess: (response) => {
-      console.log('response')
-      console.log(response)
+      if (!response) return
+
+      let users = []
+
+      const lastItem = response[response.length - 1]
+
+      if (!Object.keys(dndData.items).length && response?.length > 1) {
+        const allUsers = response
+          .filter((x) => x)
+          .map((queryResponse) => queryResponse.users)
+          .flat()
+
+        users = allUsers
+      } else {
+        users = lastItem.users
+      }
+
+      if (users.length) {
+        const newItems = {}
+
+        users.forEach((user) => {
+          newItems[`${user.userId}_${user.fullName}`] = user
+        })
+
+        const newColumns = {}
+
+        Object.values(dndData.columns).forEach((column) => {
+          const newItemIds = Object.values(newItems)
+            .filter((user) => user.currentState === column.id)
+            .map((u) => `${u.userId}_${u.fullName}`)
+
+          newColumns[column.id] = {
+            ...column,
+            itemIds: [...new Set(column.itemIds.concat(newItemIds))],
+          }
+        })
+
+        setDndData((previousState) => ({
+          ...previousState,
+          items: {
+            ...previousState.items,
+            ...newItems,
+          },
+          columns: {
+            ...previousState.columns,
+            ...newColumns,
+          },
+        }))
+      }
     },
   })
 
-  const [dndData, setDndData] = useState(dndInitialData)
+  const loadMoreButtonRef = useRef()
 
-  const onDragEnd = (result) => {
+  const fetchMoreIfYouCan = () => {
+    if (canFetchMore) {
+      fetchMore()
+    }
+  }
+
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchMoreIfYouCan,
+    dependencies: [canFetchMore],
+  })
+
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result
 
     if (!destination) {
@@ -91,6 +158,13 @@ const VacanciesPage = (props) => {
         itemIds: finishColumnItemIds,
       }
 
+      const currentUser = dndData.items[draggableId]
+
+      await axios.put(usersEndpoint, {
+        id: currentUser.userId,
+        currentState: destination.droppableId,
+      })
+
       setDndData((prevState) => ({
         ...prevState,
         columns: {
@@ -101,18 +175,30 @@ const VacanciesPage = (props) => {
       }))
     }
   }
+  const queryCache = useQueryCache()
+
+  useEffect(() => {
+    const queryData = queryCache.getQueryData('users')
+    const hasData = queryData?.filter((x) => x) || false
+
+    if (!hasData) {
+      fetchMore()
+    }
+  }, [dndData.items.length])
 
   return (
     <>
       <Navbar />
       <Wrapper>
         {isLoading ? (
-          <h3>Cargando candidatos...</h3>
+          <div className="LoadingGif__wrapper">
+            <div className="LoadingGif" />
+          </div>
         ) : error ? (
           <h3>Error: {error.message}</h3>
         ) : (
           <DragDropContext onDragEnd={onDragEnd}>
-            {/* <VacanciesGrid>
+            <VacanciesGrid isFetching={isFetching}>
               {dndData.columnOrder.map((columnId) => {
                 const column = dndData.columns[columnId]
                 const items = column.itemIds.map(
@@ -127,8 +213,8 @@ const VacanciesPage = (props) => {
                   />
                 )
               })}
-            </VacanciesGrid> */}
-            <h1>My grid component goes here</h1>
+            </VacanciesGrid>
+            <div ref={loadMoreButtonRef} />
           </DragDropContext>
         )}
       </Wrapper>
