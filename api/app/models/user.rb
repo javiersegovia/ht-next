@@ -1,7 +1,7 @@
 class User < ApplicationRecord
 
   FRONTEND_USER_KEYS = [
-    :id,
+    :userId,
     :fullName,
     :location,
     :calification,
@@ -12,6 +12,7 @@ class User < ApplicationRecord
   ]
 
   NEEDED_USER_KEYS = [
+    :id,
     :name,
     :residence_city,
     :calification,

@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DragDropContext, resetServerContext } from 'react-beautiful-dnd'
 import axios from 'axios'
-import { queryCache, useInfiniteQuery } from 'react-query'
+import { useQueryCache, useInfiniteQuery } from 'react-query'
 import VacanciesGrid from 'components/Candidates/VacanciesGrid'
 import VacancyColumn from 'components/Candidates/VacancyColumn'
 import Navbar from 'components/Layout/Navbar'
@@ -17,7 +17,7 @@ const usersEndpoint = 'http://localhost:3000/api/users'
 
 resetServerContext()
 
-const VacanciesPage = (props) => {
+const VacanciesPage = () => {
   const [dndData, setDndData] = useState(dndInitialData)
 
   const fetchUsers = async (key, nextPage = 1) => {
@@ -30,28 +30,16 @@ const VacanciesPage = (props) => {
   const {
     isLoading,
     error,
-    data,
     isFetching,
-    isFetchingMore,
     fetchMore,
     canFetchMore,
   } = useInfiniteQuery('users', fetchUsers, {
     refetchOnWindowFocus: false,
     getFetchMore: (lastGroup) => lastGroup.nextPage,
+    refetchOnMount: false,
+    enabled: false,
     cacheTime: 60 * 60 * 1000,
     staleTime: 60 * 60 * 1000,
-    initialStale: true,
-    initialData: () => {
-      // Use a todo from the 'todos' query as the initial data for this todo query
-      const currentData = queryCache.getQueryData('users')
-
-      console.log('currentData')
-      console.log(currentData)
-
-      if (currentData) {
-        // return ?.find((d) => d.id === todoId)
-      }
-    },
     onSuccess: (response) => {
       if (!response) return
 
@@ -61,6 +49,7 @@ const VacanciesPage = (props) => {
 
       if (!Object.keys(dndData.items).length && response?.length > 1) {
         const allUsers = response
+          .filter((x) => x)
           .map((queryResponse) => queryResponse.users)
           .flat()
 
@@ -169,10 +158,12 @@ const VacanciesPage = (props) => {
         itemIds: finishColumnItemIds,
       }
 
-      // await axios.put('usersEndpoint', {
-      //   id: draggableId,
-      //   currentState: destination.id,
-      // })
+      const currentUser = dndData.items[draggableId]
+
+      await axios.put(usersEndpoint, {
+        id: currentUser.userId,
+        currentState: destination.droppableId,
+      })
 
       setDndData((prevState) => ({
         ...prevState,
@@ -184,6 +175,16 @@ const VacanciesPage = (props) => {
       }))
     }
   }
+  const queryCache = useQueryCache()
+
+  useEffect(() => {
+    const queryData = queryCache.getQueryData('users')
+    const hasData = queryData?.filter((x) => x) || false
+
+    if (!hasData) {
+      fetchMore()
+    }
+  }, [dndData.items.length])
 
   return (
     <>
