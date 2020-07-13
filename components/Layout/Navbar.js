@@ -10,6 +10,9 @@ const Navbar = (props) => {
       <Link href="/vacancies">
         <a className="Navbar__linkItem">Vacantes</a>
       </Link>
+      <Link href="/vacancies/sample">
+        <a className="Navbar__linkItem">Sample</a>
+      </Link>
     </div>
   )
 }
