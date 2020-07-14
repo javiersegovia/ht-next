@@ -38,11 +38,15 @@ gem 'devise-jwt', '~> 0.6.0'
 
 gem "factory_bot_rails"
 
+gem 'parallel', '~> 1.19', '>= 1.19.2'
+
 gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
 
 gem 'will_paginate', '~> 3.1.0'
 
 gem 'rack-cors'
+
+gem 'jwt'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false

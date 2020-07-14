@@ -22,5 +22,4 @@ class User < ApplicationRecord
     :photo
   ]
 
-
 end

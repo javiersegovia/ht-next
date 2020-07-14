@@ -1,5 +1,7 @@
 class Api::UsersController < ApplicationController
 
+  before_action :verify_jwt_token
+
   DEFAULT_PAGINTAION_PARAMS = { page: 1, per_page: 10 }
 
   def show
