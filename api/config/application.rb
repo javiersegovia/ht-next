@@ -26,5 +26,7 @@ module HtApi
           )
       end
     end
+
+    config.eager_load_paths << Rails.root.join('app/libraries')
   end
 end
