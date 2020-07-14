@@ -11,10 +11,4 @@ class Api::Companies::SessionsController < Api::SessionsController
 
   end
 
-  private
-
-  def sign_in_params
-    params.permit(:email, :password).to_h.deep_symbolize_keys
-  end
-
 end
