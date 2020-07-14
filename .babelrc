@@ -12,6 +12,7 @@
         "alias": {
           "components": "./components",
           "lib": "./lib",
+          "views": "./views"
         }
       }
     ]

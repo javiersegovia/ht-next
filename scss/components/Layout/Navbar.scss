@@ -2,16 +2,40 @@
   background: white;
   border-bottom: 4px solid black;
   display: flex;
-  justify-content: center;
   padding: 20px 0;
+  width: 100%;
+  align-items: center;
 }
 
 .Navbar__linkItem {
   margin: 0 15px;
   font-weight: bold;
   transition: all .35s ease;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+
+  &[type='button'] {
+    background: $color__orange-main;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    padding: 2px 8px;
+
+    &:hover {
+      color: white;
+    }
+  }
 
   &:hover {
     color: $color__orange-main;
   }
+}
+
+.Navbar__userName {
+  display: inline-block;
+}
+
+.Navbar__userInfo {
+  margin-left: auto;
 }
