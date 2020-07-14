@@ -1,0 +1,31 @@
+.Login {
+  max-width: 300px;
+  margin: auto;
+}
+
+.Login__wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.Login__inputLabel {
+  display: flex;
+  flex-direction: column;
+}
+
+.Login__submitButton {
+  border-radius: 6px;
+  background: $color__orange-main;
+  color: white;
+  margin-top: 20px;
+  outline: none;
+  border: none;
+  padding: 8px;
+  font-weight: bold;
+}
+
+.Login__linkButton {
+  margin-top: 20px;
+  display: block;
+  text-align: right;
+}
