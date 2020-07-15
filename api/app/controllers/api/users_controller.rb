@@ -1,5 +1,5 @@
 class Api::UsersController < ApplicationController
-  before_action :authorize_refresh_request!
+  before_action :authorize_access_request!
 
   DEFAULT_PAGINTAION_PARAMS = { page: 1, per_page: 10 }
 

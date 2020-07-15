@@ -1,22 +1,16 @@
 class Api::Companies::SessionsController < Api::SessionsController
-  before_action :authorize_access_request!, only: [:destroy]
 
   def create
     company = Company.find_by_email!(sign_in_params[:email])
     if company&.valid_password?(sign_in_params[:password])
       #token = Api::Authentications::JwtService.issue_token(company.attributes.deep_symbolize_keys.slice(:email, :id))
       payload = { company_id: company.id }
-      session = JWTSessions::Session.new(payload: payload)
+      session = JWTSessions::Session.new(payload: payload, refresh_by_access_allowed: true)
       tokens = session.login
 
       response.set_cookie(JWTSessions.access_cookie,
                         {
                           value: tokens[:access],
-                          httponly: false,
-                          expires: 30.minutes.from_now,
-                          secure: false})
-      response.set_cookie(JWTSessions.refresh_cookie,{
-                          value: tokens[:refresh],
                           httponly: false,
                           expires: 30.minutes.from_now,
                           secure: false})
@@ -28,7 +22,7 @@ class Api::Companies::SessionsController < Api::SessionsController
 
   end
 
-  def destroy
+  def logout
     session = JWTSessions::Session.new(payload: payload)
     session.flush_by_access_payload
     render json: :ok
