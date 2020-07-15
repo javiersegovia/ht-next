@@ -4,6 +4,10 @@ import axios from 'axios'
 
 const signUpEndpoint = 'http://localhost:3000/api/signup'
 
+axios.defaults.xsrfCookieName = 'CSRF-TOKEN'
+axios.defaults.xsrfHeaderName = 'X-CSRF-Token'
+axios.defaults.withCredentials = true
+
 export const AuthContext = createContext()
 
 const AuthProvider = ({ children }) => {
@@ -13,10 +17,16 @@ const AuthProvider = ({ children }) => {
   })
 
   const createUserRequest = async ({ email, password }) => {
-    const data = await axios.post(signUpEndpoint, {
-      email,
-      password,
-    })
+    const data = await axios.post(
+      signUpEndpoint,
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    )
 
     return data
   }

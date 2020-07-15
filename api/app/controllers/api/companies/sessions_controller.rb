@@ -10,13 +10,16 @@ class Api::Companies::SessionsController < Api::SessionsController
       tokens = session.login
 
       response.set_cookie(JWTSessions.access_cookie,
+                        {
                           value: tokens[:access],
-                          httponly: true,
-                          secure: Rails.env.production?)
-      response.set_cookie(JWTSessions.refresh_cookie,
+                          httponly: false,
+                          expires: 30.minutes.from_now,
+                          secure: false})
+      response.set_cookie(JWTSessions.refresh_cookie,{
                           value: tokens[:refresh],
-                          httponly: true,
-                          secure: Rails.env.production?)
+                          httponly: false,
+                          expires: 30.minutes.from_now,
+                          secure: false})
 
       render json: { csrf: tokens[:csrf] }
     else

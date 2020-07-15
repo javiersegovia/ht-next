@@ -15,7 +15,7 @@ const Vacancy = ({ vacancy }) => {
       <div className="Vacancy__infoContainer">
         <div
           className="Vacancy__avatar"
-          style={{ backgroundImage: `url(${photoPath})` }}
+          // style={{ backgroundImage: `url(${photoPath})` }}
         />
         <div className="Vacancy__info">
           <div className="Vacancy__name">{fullName}</div>

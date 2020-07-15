@@ -22,12 +22,14 @@ class Api::Companies::RegistrationsController < Api::RegistrationsController
 
       response.set_cookie(JWTSessions.access_cookie,
                           value: tokens[:access],
-                          httponly: true,
-                          secure: Rails.env.production?)
+                          httponly: false,
+                          domain: nil,
+                          secure: false)
       response.set_cookie(JWTSessions.refresh_cookie,
                           value: tokens[:refresh],
-                          httponly: true,
-                          secure: Rails.env.production?)
+                          httponly: false,
+                          domain: nil,
+                          secure: false)
 
       render json: { csrf: tokens[:csrf] }
     else
