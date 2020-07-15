@@ -1,6 +1,5 @@
 class Api::UsersController < ApplicationController
-
-  before_action :verify_jwt_token
+  before_action :authorize_refresh_request!
 
   DEFAULT_PAGINTAION_PARAMS = { page: 1, per_page: 10 }
 
