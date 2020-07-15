@@ -17,16 +17,11 @@ class Api::Companies::RegistrationsController < Api::RegistrationsController
       company = Company.find_by_email(resource.email)
 
       payload = { company_id: company.id }
-      session = JWTSessions::Session.new(payload: payload)
+      session = JWTSessions::Session.new(payload: payload, refresh_by_access_allowed: true)
       tokens = session.login
 
       response.set_cookie(JWTSessions.access_cookie,
                           value: tokens[:access],
-                          httponly: false,
-                          domain: nil,
-                          secure: false)
-      response.set_cookie(JWTSessions.refresh_cookie,
-                          value: tokens[:refresh],
                           httponly: false,
                           domain: nil,
                           secure: false)

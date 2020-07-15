@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   devise_for :companies
   devise_scope :company do
     post "api/login" => "api/companies/sessions#create"
+    post "api/logout" => "api/companies/sessions#logout"
     post "api/signup" => "api/companies/registrations#create"
   end
 
