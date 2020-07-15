@@ -10,7 +10,7 @@ import Navbar from 'components/Layout/Navbar'
 import Wrapper from 'components/Layout/Wrapper'
 import dndInitialData from 'lib/dndData'
 import { ReactQueryDevtools } from 'react-query-devtools'
-
+import UserIsAuthenticated from 'components/Session/UserIsAuthenticated'
 import useIntersectionObserver from '../../hooks/useIntersectionObserver'
 
 const usersEndpoint = 'http://localhost:3000/api/users'
@@ -190,33 +190,37 @@ const VacanciesPage = () => {
     <>
       <Navbar />
       <Wrapper>
-        {isLoading ? (
-          <div className="LoadingGif__wrapper">
-            <div className="LoadingGif" />
-          </div>
-        ) : error ? (
-          <h3>Error: {error.message}</h3>
-        ) : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <VacanciesGrid isFetching={isFetching}>
-              {dndData.columnOrder.map((columnId) => {
-                const column = dndData.columns[columnId]
-                const items = column.itemIds.map(
-                  (itemId) => dndData.items[itemId]
-                )
+        <UserIsAuthenticated>
+          <>
+            {isLoading ? (
+              <div className="LoadingGif__wrapper">
+                <div className="LoadingGif" />
+              </div>
+            ) : error ? (
+              <h3>Error: {error.message}</h3>
+            ) : (
+              <DragDropContext onDragEnd={onDragEnd}>
+                <VacanciesGrid isFetching={isFetching}>
+                  {dndData.columnOrder.map((columnId) => {
+                    const column = dndData.columns[columnId]
+                    const items = column.itemIds.map(
+                      (itemId) => dndData.items[itemId]
+                    )
 
-                return (
-                  <VacancyColumn
-                    key={column.id}
-                    column={column}
-                    items={items}
-                  />
-                )
-              })}
-            </VacanciesGrid>
-            <div ref={loadMoreButtonRef} />
-          </DragDropContext>
-        )}
+                    return (
+                      <VacancyColumn
+                        key={column.id}
+                        column={column}
+                        items={items}
+                      />
+                    )
+                  })}
+                </VacanciesGrid>
+                <div ref={loadMoreButtonRef} />
+              </DragDropContext>
+            )}
+          </>
+        </UserIsAuthenticated>
       </Wrapper>
       <ReactQueryDevtools initialIsOpen />
     </>

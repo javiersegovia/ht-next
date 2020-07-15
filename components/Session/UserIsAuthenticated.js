@@ -2,7 +2,7 @@ import React from 'react'
 import useAuth from 'hooks/useAuth'
 import Link from 'next/link'
 
-const IsAuthenticated = ({ children }) => {
+const UserIsAuthenticated = ({ children }) => {
   const { isAuthenticated } = useAuth()
 
   return isAuthenticated ? (
@@ -17,4 +17,4 @@ const IsAuthenticated = ({ children }) => {
   )
 }
 
-export default IsAuthenticated
+export default UserIsAuthenticated

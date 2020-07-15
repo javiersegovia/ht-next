@@ -18,11 +18,12 @@ module HtApi
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
+        origins 'http://localhost:4000'
         resource(
           '*',
           headers: :any,
-          methods: [:get, :patch, :put, :delete, :post, :options]
+          methods: [:get, :patch, :put, :delete, :post, :options],
+          credentials: true
           )
       end
     end
