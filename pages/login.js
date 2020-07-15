@@ -1,21 +1,24 @@
 import { useState } from 'react'
-import { useQuery } from 'react-query'
 import Navbar from 'components/Layout/Navbar'
 import Wrapper from 'components/Layout/Wrapper'
 import Link from 'next/link'
+import useAuth from 'hooks/useAuth'
 
 const LoginPage = () => {
   const [formState, setFormState] = useState({})
-
-  const loginRequest = () => {
-    if (!formState.email || !formState.password) {
-      alert('Email and password is needed')
-    }
-  }
+  const { login } = useAuth()
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    loginRequest()
+
+    const { email, password } = formState
+
+    if (!email || !password) {
+      alert('Email and password is needed')
+      return
+    }
+
+    login({ email, password })
   }
 
   const handleChange = (event) => {
